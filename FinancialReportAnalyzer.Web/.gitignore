@@ -1,0 +1,10 @@
+Set-Content .gitignore "
+# Visual Studio
+.vs/
+*.sln.docstates
+*.suo
+
+
+[Bb]in/
+[Oo]bj/
+"

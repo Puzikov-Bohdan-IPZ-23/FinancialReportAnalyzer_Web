@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Аналіз тексту";
+}
+
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    <p>@ViewData["Description"]</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <form method="post" asp-controller="Analyzer" asp-action="AnalyzeText">
+            <div class="mb-3">
+                <label for="reportText" class="form-label">Вставте текст звіту:</label>
+                <textarea class="form-control" id="reportText" name="reportText" rows="10"></textarea>
+            </div>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @ViewBag.Error
+                </div>
+            }
+
+            <button type="submit" class="btn btn-primary">Аналізувати</button>
+        </form>
+    </div>
+</div>
+

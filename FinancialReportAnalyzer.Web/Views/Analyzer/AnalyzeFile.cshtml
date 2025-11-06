@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Аналіз PDF файлу";
+}
+
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    <p>@ViewData["Description"]</p>
+</div>
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <form method="post" enctype="multipart/form-data" asp-controller="Analyzer" asp-action="AnalyzeFile">
+            <div class="mb-3">
+                <label for="reportFile" class="form-label">Оберіть PDF-файл для аналізу:</label>
+                <input class="form-control" type="file" id="reportFile" name="reportFile" accept=".pdf" required />
+            </div>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @ViewBag.Error
+                </div>
+            }
+
+            <button type="submit" class="btn btn-primary">Аналізувати</button>
+        </form>
+    </div>
+</div>
+

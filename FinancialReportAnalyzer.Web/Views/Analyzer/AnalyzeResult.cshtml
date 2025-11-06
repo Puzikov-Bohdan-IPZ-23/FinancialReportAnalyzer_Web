@@ -1,0 +1,43 @@
+﻿@model Dictionary<string, decimal>
+@{
+    ViewData["Title"] = "Результати аналізу";
+}
+
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    <p>Система проаналізувала ваш документ і знайшла наступні показники:</p>
+</div>
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        @if (Model == null || Model.Count == 0)
+        {
+            <div class="alert alert-warning" role="alert">
+                На жаль, у наданому тексті не знайдено жодних фінансових показників.
+            </div>
+        }
+        else
+        {
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Показник</th>
+                        <th>Значення (грн)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Key.ToUpper()</td>
+                            <td>@item.Value.ToString("N0", new System.Globalization.CultureInfo("uk-UA"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        <hr />
+        <a asp-action="AnalyzeFile" class="btn btn-secondary">Аналізувати інший файл</a>
+        <a asp-action="AnalyzeText" class="btn btn-info">Аналізувати інший текст</a>
+    </div>
+</div>
