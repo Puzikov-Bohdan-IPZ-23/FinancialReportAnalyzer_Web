@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace FinancialReportAnalyzer.Web.Services
 {
-    //  той самий клас з Лабораторної 1
+    // той самий клас з Лабораторної 1
     public class ReportAnalyzer
     {
         private readonly List<string> _keywords;
@@ -30,23 +30,28 @@ namespace FinancialReportAnalyzer.Web.Services
                 return results;
             }
 
+            // Ми робимо текст у нижньому регістрі ОДИН РАЗ, щоб пошук був нечутливим
+            var lowerText = text.ToLowerInvariant();
+
             foreach (var keyword in _keywords)
             {
-                // Покращений Regex для пошуку чисел (включаючи пробіли і коми)
+               
                 var pattern = new Regex($@"{keyword}[^\d]*([\d\s,.]+)");
-                var match = pattern.Match(text);
+                var matches = pattern.Matches(lowerText);
 
-                if (match.Success)
+                if (matches.Count > 0)
                 {
+                    // Беремо ОСТАННЄ збіг для слова 
+                    var match = matches[matches.Count - 1];
                     string numberAsString = match.Groups[1].Value;
-                    // Очищуємо рядок від усього, крім цифр та десяткових роздільників
-                    string cleanedNumber = Regex.Replace(numberAsString, @"[^\d,.]", "");
 
-                    // Замінюємо кому на крапку для коректного парсингу
-                    cleanedNumber = cleanedNumber.Replace(',', '.');
+               
+                    string cleanedNumber = Regex.Replace(numberAsString, @"[,\.\s]", "");
 
+                    // 2. Спробуємо розпарсити як ціле число
                     if (decimal.TryParse(cleanedNumber, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal value))
                     {
+                        // Якщо такого ключа ще немає, або ми знайшли нове значення
                         results[keyword] = value;
                     }
                 }

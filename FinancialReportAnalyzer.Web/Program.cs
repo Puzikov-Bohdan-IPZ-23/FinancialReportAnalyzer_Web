@@ -5,24 +5,74 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.IdentityModel.Logging;
+using FinancialReportAnalyzer.Web.Models; // Додаємо наші моделі
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
-// 1. Налаштування сервісів
-var connectionString = config.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+//  РОБОТА З БАЗАМИ ДАНИХ 
+
+// 1. Отримуємо ключ вибору провайдера
+var provider = config["DatabaseProvider"];
+
+// 2. Реєструємо ApplicationDbContext (для Identity)
+// Він буде використовувати того ж провайдера, що і ReportDbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+{
+    switch (provider)
+    {
+        case "MsSql": // a. MS-SQL
+            options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+            break;
+        case "Postgres": // b. Postgres
+            options.UseNpgsql(config.GetConnectionString("PostgresConnection"));
+            break;
+        case "Sqlite": // c. Sqlite
+            options.UseSqlite(config.GetConnectionString("SqliteConnection"));
+            break;
+        case "InMemory": // d. In-Memory
+            options.UseInMemoryDatabase("InMemoryDb_Identity");
+            break;
+        default:
+            throw new InvalidOperationException($"Database provider '{provider}' is not supported.");
+    }
+});
 
-// 2. Налаштування Identity 
+// 3. Реєструємо ReportDbContext (для бізнес-логіки)
+// Він буде використовувати того ж провайдера, що і ApplicationDbContext
+builder.Services.AddDbContext<ReportDbContext>(options =>
+{
+    switch (provider)
+    {
+        case "MsSql": // a. MS-SQL
+            options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+            break;
+        case "Postgres": // b. Postgres
+            options.UseNpgsql(config.GetConnectionString("PostgresConnection"));
+            break;
+        case "Sqlite": // c. Sqlite
+            options.UseSqlite(config.GetConnectionString("SqliteConnection"));
+            break;
+        case "InMemory": // d. In-Memory
+            options.UseInMemoryDatabase("InMemoryDb_Reports");
+            break;
+        default:
+            throw new InvalidOperationException($"Database provider '{provider}' is not supported.");
+    }
+});
+
+
+
+
+// 4. Налаштування Identity (використовує ApplicationDbContext)
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>(); // <-- Важливо: вказуємо ApplicationDbContext
 
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllersWithViews();
 
 
-// 1. Налаштовуємо cookie, ЯКИЙ ВЖЕ СТВОРЕНО AddDefaultIdentity()
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     // Встановлюємо, куди перенаправляти користувача
