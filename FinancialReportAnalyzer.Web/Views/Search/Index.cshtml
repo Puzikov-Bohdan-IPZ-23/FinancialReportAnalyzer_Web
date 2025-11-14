@@ -1,0 +1,78 @@
+﻿@model FinancialReportAnalyzer.Web.Models.SearchViewModel
+
+@{
+    ViewData["Title"] = "Розширений пошук звітів";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <h4>Фільтри пошуку</h4>
+        <form asp-action="Index" method="get">
+
+            <div class="mb-3">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="EndDate" class="control-label"></label>
+                <input asp-for="EndDate" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="TitleStartsWith" class="control-label"></label>
+                <input asp-for="TitleStartsWith" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="CompanyNameEndsWith" class="control-label"></label>
+                <input asp-for="CompanyNameEndsWith" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SelectedCompanyIds" class="control-label"></label>
+                <select asp-for="SelectedCompanyIds" class="form-control" asp-items="Model.CompanyOptions" multiple style="height: 150px;">
+                </select>
+                <small class="form-text text-muted">Утримуйте Ctrl (або Cmd) для вибору кількох.</small>
+            </div>
+
+            <div class="mb-3">
+                <input type="submit" value="Пошук" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Очистити</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-8">
+        <h4>Результати (@Model.Results.Count)</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Назва звіту (Title)</th>
+                    <th>Компанія (JOIN 1)</th>
+                    <th>Тип звіту (JOIN 2)</th>
+                    <th>Дата аналізу</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Results)
+                {
+                    <tr>
+                        <td>
+                            <a asp-controller="SavedReports" asp-action="Details" asp-route-id="@item.Id">@item.Title</a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Company.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ReportType.TypeName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AnalyzedAt)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

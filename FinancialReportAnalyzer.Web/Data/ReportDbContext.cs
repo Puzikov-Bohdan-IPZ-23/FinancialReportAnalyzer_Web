@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using FinancialReportAnalyzer.Web.Models; // Підключаємо наші нові моделі
+using FinancialReportAnalyzer.Web.Models; // Підключаємо нові моделі
 
 namespace FinancialReportAnalyzer.Web.Data
 {
@@ -20,7 +20,6 @@ namespace FinancialReportAnalyzer.Web.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Вказуємо, що MetricValue має бути типу decimal(18, 2)
             modelBuilder.Entity<FinancialMetric>(entity =>
             {
                 entity.Property(e => e.MetricValue).HasColumnType("decimal(18, 2)");
@@ -48,8 +47,7 @@ namespace FinancialReportAnalyzer.Web.Data
                     Id = 1,
                     Title = "Звіт 'Техносфера' за півріччя 2025",
 
-                    // --- ОСЬ ВИПРАВЛЕННЯ ---
-                    // Використовуємо статичну, "жорстко" задану дату
+                    
                     AnalyzedAt = new DateTime(2025, 10, 25, 0, 0, 0, DateTimeKind.Utc),
 
                     CompanyId = 1, // 'Техносфера'
@@ -57,7 +55,7 @@ namespace FinancialReportAnalyzer.Web.Data
                 }
             );
 
-            // Приклад фінансових показників для першого звіту
+            // Приклад фінансових показників 
             modelBuilder.Entity<FinancialMetric>().HasData(
                 new FinancialMetric { Id = 1, SavedReportId = 1, MetricName = "дохід", MetricValue = 1500000 },
                 new FinancialMetric { Id = 2, SavedReportId = 1, MetricName = "витрати", MetricValue = 950000 },

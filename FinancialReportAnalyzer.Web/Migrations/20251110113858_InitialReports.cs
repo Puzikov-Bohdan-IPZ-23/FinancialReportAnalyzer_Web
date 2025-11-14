@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FinancialReportAnalyzer.Web.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialReportSchema : Migration
+    public partial class InitialReports : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,10 +17,10 @@ namespace FinancialReportAnalyzer.Web.Migrations
                 name: "Companies",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Industry = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Industry = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,9 +31,9 @@ namespace FinancialReportAnalyzer.Web.Migrations
                 name: "ReportTypes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TypeName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TypeName = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,12 +44,12 @@ namespace FinancialReportAnalyzer.Web.Migrations
                 name: "SavedReports",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AnalyzedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: false),
-                    ReportTypeId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    AnalyzedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CompanyId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ReportTypeId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,11 +72,11 @@ namespace FinancialReportAnalyzer.Web.Migrations
                 name: "FinancialMetrics",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MetricName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MetricValue = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SavedReportId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    MetricName = table.Column<string>(type: "TEXT", nullable: false),
+                    MetricValue = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    SavedReportId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
